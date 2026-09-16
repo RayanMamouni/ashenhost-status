@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #030303;
+    --surface: #0A0A0A;
+    --surface-subtle: #121212;
+    --border: #222222;
+  }
+
+  body {
+    background-color: #030303;
+    color: #EAEAEA;
+    font-family: var(--font-inter), sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Cyber Monospace Elements */
+  code, pre, kbd, .font-mono {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-space-grotesk), sans-serif;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+}
+
+/* Custom Technical Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+::-webkit-scrollbar-thumb {
+  background: #222222;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
+
+/* Status Indicator Glows */
+.glow-up {
+  box-shadow: 0 0 8px #39FF88;
+}
+.glow-down {
+  box-shadow: 0 0 8px #FF3B3B;
+}
+.glow-degraded {
+  box-shadow: 0 0 8px #FFB800;
+}
+.glow-accent {
+  box-shadow: 0 0 8px #9D4EDD;
+}
