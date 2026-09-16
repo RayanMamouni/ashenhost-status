@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding AshenHost Status database...');
 
+  const now = Date.now();
+
   // Clean existing data
   await prisma.notificationLog.deleteMany();
   await prisma.notificationChannel.deleteMany();
