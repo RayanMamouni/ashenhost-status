@@ -22,8 +22,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
 COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
 COPY --from=builder /app/apps/web/next.config.js ./apps/web/next.config.js
+RUN mkdir -p ./apps/web/public
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
 CMD ["npm", "run", "start", "--workspace=apps/web"]
