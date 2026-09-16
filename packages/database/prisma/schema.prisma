@@ -47,6 +47,10 @@ model Organization {
   name                 String
   slug                 String                @unique
   plan                 String                @default("starter")
+  logoUrl              String?               @map("logo_url")
+  bannerUrl            String?               @map("banner_url")
+  primaryColor         String                @default("#9D4EDD") @map("primary_color")
+  customCss            String?               @map("custom_css")
   createdAt            DateTime              @default(now()) @map("created_at")
   updatedAt            DateTime              @updatedAt @map("updated_at")
 
@@ -55,6 +59,7 @@ model Organization {
   incidents            Incident[]
   statusPages          StatusPage[]
   notificationChannels NotificationChannel[]
+  auditLogs            AuditLog[]
 
   @@map("organizations")
 }
@@ -179,6 +184,12 @@ model StatusPage {
   monitorIds     String[]     @default([]) @map("monitor_ids")
   isPublic       Boolean      @default(true) @map("is_public")
   logoUrl        String?      @map("logo_url")
+  bannerUrl      String?      @map("banner_url")
+  heroTitle      String?      @default("System Status") @map("hero_title")
+  announcement   String?      // Broadcast banner on top of status page
+  themeColor     String       @default("#9D4EDD") @map("theme_color")
+  footerText     String?      @map("footer_text")
+  showUptimeDays Int          @default(90) @map("show_uptime_days")
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
@@ -218,4 +229,23 @@ model NotificationLog {
 
   @@index([channelId, sentAt(sort: Desc)])
   @@map("notification_logs")
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  actorEmail     String       @map("actor_email")
+  actorName      String?      @map("actor_name")
+  action         String       // e.g. "UPDATE_SETTINGS", "CREATE_MONITOR", "DELETE_INCIDENT"
+  resourceType   String       @map("resource_type") // e.g. "ORGANIZATION", "MONITOR", "STATUS_PAGE"
+  resourceId     String?      @map("resource_id")
+  details        Json?
+  ipAddress      String?      @map("ip_address")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([action])
+  @@map("audit_logs")
 }

@@ -13,8 +13,7 @@ async function sendEmailNotification(to: string, payload: NotificationPayload) {
   const from = process.env.SMTP_FROM || 'AshenHost Alerts <alerts@ashenhost.local>';
 
   if (!host || !user) {
-    console.log(`[Notification:Email] (Mock Mode - No SMTP configured) To: ${to} | Subject: [${payload.event}] ${payload.monitorName || payload.incidentTitle} | Message: ${payload.message}`);
-    return { success: true, mocked: true };
+    throw new Error('SMTP credentials not configured on server (SMTP_HOST / SMTP_USER missing in .env)');
   }
 
   const transporter = nodemailer.createTransport({

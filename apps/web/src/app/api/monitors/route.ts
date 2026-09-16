@@ -69,5 +69,16 @@ export async function POST(req: Request) {
     },
   });
 
+  const { createAuditLog } = await import('@/lib/audit');
+  await createAuditLog({
+    organizationId,
+    actorEmail: session.user.email || 'unknown',
+    actorName: session.user.name,
+    action: 'CREATE_MONITOR',
+    resourceType: 'MONITOR',
+    resourceId: monitor.id,
+    details: { name: monitor.name, url: monitor.url, type: monitor.type },
+  });
+
   return NextResponse.json({ monitor }, { status: 201 });
 }

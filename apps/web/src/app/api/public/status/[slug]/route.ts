@@ -6,7 +6,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     where: { slug: params.slug },
     include: {
       organization: {
-        select: { name: true, slug: true },
+        select: { name: true, slug: true, logoUrl: true, bannerUrl: true, primaryColor: true },
       },
     },
   });
@@ -15,7 +15,14 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     return NextResponse.json({ error: 'Status page not found or private' }, { status: 404 });
   }
 
-  // Fetch configured monitors
+  // Merge org branding as fallback if status page doesn't have its own
+  const mergedPage = {
+    ...statusPage,
+    logoUrl: statusPage.logoUrl || statusPage.organization?.logoUrl || null,
+    bannerUrl: statusPage.bannerUrl || statusPage.organization?.bannerUrl || null,
+    themeColor: statusPage.themeColor || statusPage.organization?.primaryColor || '#9D4EDD',
+  };
+
   const monitors = await prisma.monitor.findMany({
     where: {
       id: { in: statusPage.monitorIds },
@@ -28,7 +35,6 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     },
   });
 
-  // Fetch active and recent incidents
   const incidents = await prisma.incident.findMany({
     where: {
       organizationId: statusPage.organizationId,
@@ -44,7 +50,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
   });
 
   return NextResponse.json({
-    statusPage,
+    statusPage: mergedPage,
     monitors,
     incidents,
   });

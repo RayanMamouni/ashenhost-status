@@ -86,52 +86,7 @@ async function main() {
     },
   });
 
-  // Seed sample checks for the last 24 hours (every 10 minutes)
-  console.log('📊 Generating historical checks...');
-  const now = Date.now();
-  const checksData = [];
-
-  for (let i = 0; i < 144; i++) {
-    const timestamp = new Date(now - i * 10 * 60 * 1000);
-    
-    // API Monitor checks (with occasional simulated spike)
-    const apiResponseTime = Math.floor(45 + Math.random() * 35 + (i === 12 ? 350 : 0));
-    checksData.push({
-      monitorId: apiMonitor.id,
-      timestamp,
-      responseTimeMs: apiResponseTime,
-      statusCode: 200,
-      success: true,
-      region: 'eu-central',
-    });
-
-    // Web Monitor checks
-    const webResponseTime = Math.floor(80 + Math.random() * 40);
-    checksData.push({
-      monitorId: webMonitor.id,
-      timestamp,
-      responseTimeMs: webResponseTime,
-      statusCode: 200,
-      success: true,
-      region: 'eu-central',
-    });
-
-    // DNS checks
-    const dnsResponseTime = Math.floor(15 + Math.random() * 10);
-    checksData.push({
-      monitorId: dbMonitor.id,
-      timestamp,
-      responseTimeMs: dnsResponseTime,
-      statusCode: null,
-      success: true,
-      region: 'eu-central',
-    });
-  }
-
-  await prisma.check.createMany({
-    data: checksData,
-  });
-
+  // Real monitors are created. The background worker will perform real checks!
   // Seed Status Page
   const statusPage = await prisma.statusPage.create({
     data: {
@@ -139,6 +94,10 @@ async function main() {
       name: 'AshenHost Network Status',
       slug: 'ashenhost',
       description: 'Real-time and historical uptime status for AshenHost infrastructure and services.',
+      heroTitle: 'Official Infrastructure Status',
+      announcement: 'All core edge clusters and DNS services are actively monitored.',
+      themeColor: '#9D4EDD',
+      footerText: 'Powered by AshenHost Enterprise Engine',
       monitorIds: [apiMonitor.id, webMonitor.id, dbMonitor.id],
       isPublic: true,
     },

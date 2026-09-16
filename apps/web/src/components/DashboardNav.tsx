@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Layers,
   Terminal,
+  ShieldAlert,
 } from 'lucide-react';
 
 export function DashboardNav() {
@@ -27,6 +28,7 @@ export function DashboardNav() {
     { label: '[02] INCIDENTS', href: '/dashboard/incidents', icon: AlertTriangle },
     { label: '[03] STATUS PAGE', href: '/dashboard/status-page', icon: Radio },
     { label: '[04] SETTINGS', href: '/dashboard/settings', icon: Sliders },
+    { label: '[05] ADMIN_PANEL', href: '/admin', icon: ShieldAlert },
   ];
 
   return (

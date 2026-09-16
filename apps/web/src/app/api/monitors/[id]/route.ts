@@ -78,5 +78,15 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ error: 'Monitor not found' }, { status: 404 });
   }
 
+  const { createAuditLog } = await import('@/lib/audit');
+  await createAuditLog({
+    organizationId,
+    actorEmail: session.user.email || 'unknown',
+    actorName: session.user.name,
+    action: 'DELETE_MONITOR',
+    resourceType: 'MONITOR',
+    resourceId: params.id,
+  });
+
   return NextResponse.json({ success: true });
 }
